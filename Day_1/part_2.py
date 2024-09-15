@@ -1,6 +1,4 @@
 # ------------- PART 2 --------------------
-import re
-
 numbers = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
 number_lengths = {num: len(num) for num in numbers}
 number_to_index = {num: str(index + 1) for index, num in enumerate(numbers)}
