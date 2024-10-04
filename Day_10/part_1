@@ -1,0 +1,63 @@
+from collections import deque
+
+file_path = 'Day_10/input.txt'
+
+# Read file and process lines
+with open(file_path) as file:
+    lines = [line.strip() for line in file.readlines()]
+
+n, m = len(lines), len(lines[0])
+
+# Function to get neighbors based on rules
+def fetch_neighbors(x, y):
+    neighbors = []
+    for dx, dy in valid_directions(x, y):
+        nx, ny = x + dx, y + dy
+        if 0 <= nx < n and 0 <= ny < m:
+            neighbors.append((nx, ny))
+    return neighbors
+
+# Function to return valid directions
+def valid_directions(x, y):
+    if lines[x][y] == "S":
+        return [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+    direction_map = {
+        "|": [(1, 0), (-1, 0)],
+        "-": [(0, 1), (0, -1)],
+        "L": [(-1, 0), (0, 1)],
+        "J": [(-1, 0), (0, -1)],
+        "7": [(1, 0), (0, -1)],
+        "F": [(1, 0), (0, 1)],
+        ".": []
+    }
+    return direction_map.get(lines[x][y], [])
+
+# Locate the start point 'S'
+start_x, start_y = None, None
+for row_idx, row in enumerate(lines):
+    if 'S' in row:
+        start_x, start_y = row_idx, row.index('S')
+        break
+
+# Breadth-First Search (BFS) to calculate distances
+visited = set()
+distances = {}
+queue = deque([((start_x, start_y), 0)])
+
+while queue:
+    (current_x, current_y), current_dist = queue.popleft()
+
+    if (current_x, current_y) in visited:
+        continue
+
+    visited.add((current_x, current_y))
+    distances[(current_x, current_y)] = current_dist
+
+    for neighbor in fetch_neighbors(current_x, current_y):
+        if neighbor not in visited:
+            queue.append((neighbor, current_dist + 1))
+
+# Output the maximum distance
+max_distance = max(distances.values()) + 10
+print(max_distance)
